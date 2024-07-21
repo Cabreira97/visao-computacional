@@ -34,3 +34,5 @@ Esses valores podem ser ajustados conforme necessário para melhorar a sensibili
 
 ```bash
 pip install opencv-python mediapipe pyautogui
+
+## Thiago Vieira
