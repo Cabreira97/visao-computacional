@@ -8,6 +8,8 @@ detector_maos = mp.solutions.hands.Hands()
 utilitarios_desenho = mp.solutions.drawing_utils
 largura_tela, altura_tela = pyautogui.size()
 
+contador_clicks = 0  # Inicializa o contador de cliques
+
 # Função para processar o quadro e detectar mãos
 def processar_quadro(quadro):
     quadro = cv2.flip(quadro, 1)
@@ -30,11 +32,14 @@ def obter_posicoes_landmarks(mao, largura_quadro, altura_quadro):
 
 # Função para mover o cursor e clicar com base na posição dos dedos
 def controlar_cursor_e_clicar(pos_indicador, pos_polegar):
+    global contador_clicks  # Usa a variável global para o contador de cliques
     indicador_x, indicador_y = pos_indicador
     polegar_x, polegar_y = pos_polegar
     pyautogui.moveTo(polegar_x, polegar_y)
     if abs(indicador_y - polegar_y) < 20:
         pyautogui.click()
+        contador_clicks += 1  # Incrementa o contador de cliques
+        print(f"Contador de Cliques: {contador_clicks}")  # Opcional: Imprime o contador no console
         pyautogui.sleep(1)
     elif abs(indicador_y - polegar_y) < 100:
         pyautogui.moveTo(indicador_x, indicador_y)
@@ -58,6 +63,9 @@ while True:
 
             # Controlar o cursor e clicar
             controlar_cursor_e_clicar(pos_indicador, pos_polegar)
+
+    # Opcional: Exibe o contador de cliques na janela do OpenCV
+    cv2.putText(quadro, f"Cliques: {contador_clicks}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     quadro = desenhar_landmarks(quadro, maos)
     cv2.imshow('Mouse Virtual', quadro)
